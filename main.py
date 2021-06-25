@@ -12,6 +12,7 @@ gravity=0.25
 bird_movement=0
 obstacle_rect_list=[]
 screen=pygame.display.set_mode((WIDTH,HEIGHT))
+pygame.display.set_caption("Flappy Bird")
 background=pygame.image.load("download.jpg")
 background=pygame.transform.scale(background,(WIDTH,HEIGHT))
 player=pygame.image.load("player.png")
@@ -21,15 +22,19 @@ bird_rect=player.get_rect(center=(350,250))
 obstacle=pygame.image.load("obstacle.png")
 obstacle=pygame.transform.scale(obstacle,(100,200))
 for i in range(num_of_obstacles):
-    Obstacle_x.append(random.randint(800 * (i + 1) -60, 800 * (i + 2)+60))
+    Obstacle_x.append(random.randint(800 * (i + 1) +60, 800 * (i + 2)- 60))
 for y in range(num_of_obstacles):
     Obstacle_y.append(random.choice((400,1)))
 running=True
 def Lose():
+    screen.fill((255,255,255))
+    background = pygame.image.load("download.jpg")
     Lost = pygame.font.Font("freesansbold.ttf",64)
+    background=pygame.transform.scale(background,(WIDTH,HEIGHT))
     Lost_text=Lost.render("You Lost",True,(255,255,255))
-    screen.blit(background,(WIDTH,HEIGHT))
+    screen.blit(background,(0,0))
     screen.blit(Lost_text,(250,250))
+    pygame.display.update()
 def obstacles(x, y,obstacle):
     clock=pygame.time.Clock()
     clock.tick(FPS)
@@ -40,17 +45,14 @@ def obstacles(x, y,obstacle):
         obstacle=pygame.transform.scale(obstacle,(100,200))
         screen.blit(obstacle, (x, y))
 def collision(obstacle_rect):
-    if bird_rect.x+player.get_width()-10>obstacle_rect.x and bird_rect.x+player.get_width()-5<obstacle_rect.x+100:
+    if bird_rect.x+player.get_width()-10>obstacle_rect.x and bird_rect.x+player.get_width()-10<obstacle_rect.x+100-20 or bird_rect.x<obstacle_rect.x+100 and bird_rect.x+5>obstacle_rect.x:
         if obstacle_rect.y==1:
-            if bird_rect.y+-10 <obstacle_rect.y+200:
-                Lose()
+            if bird_rect.y <obstacle_rect.y+200:
                 return True
         else:
-            if bird_rect.y+player.get_height()-5>obstacle_rect.y:
-                Lose()
+            if bird_rect.y+player.get_height()-3>obstacle_rect.y:
                 return True
     if bird_rect.y+200-100>600:
-        Lose()
         return True
 while running:
     for event in pygame.event.get():
